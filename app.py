@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from flask import Flask, jsonify
+from flask import Flask, render_template
 
 import pymongo
 import datetime as dt
@@ -33,19 +33,12 @@ db.mars_db.insert_one({
 
 
 @app.route("/")
-def welcome():
-    return (
-        f"Available Routes:<br/>"
-        f"/api/v1.0/mars<br/>"
-    )
+def echo():
+    return render_template("index.html", text="app.py")
 
 @app.route("/scrape")
 def scrape():
-    return (
-        # import scrape_mas.py # 
-    )
-
-
+    return (app.py)
 
 if __name__ == '__main__':
     app.run(debug=True)
