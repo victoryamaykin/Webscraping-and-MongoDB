@@ -15,11 +15,6 @@ def scrape_info():
     # Scrape page into Soup
     html = browser.html
     soup = bs(html, "lxml")
-    relative_image_list = [img['src'] for img in soup.find_all('img', class_="fancybox-image")]
-    relative_image_list = []
-    for img in soup.find_all('img'):
-        relative_image_list.append(img['src'])
-        featured_image =  relative_image_list[-1]
 
     url = "https://mars.nasa.gov/news/?page=0&per_page=40&order=publish_date+desc%2Ccreated_at+desc&search=&category=19%2C165%2C184%2C204&blank_scope=Latest"
     browser.visit(url)
@@ -39,6 +34,9 @@ def scrape_info():
             'Summary': news_p,
             'Featured Image': featured_image,
             'Weather': mars_weather, 
+            "Mars Facts": mars_df, 
+            "Title": titles, 
+            "img_url": img_urls, 
                 "Date of entry": time
     })
 
