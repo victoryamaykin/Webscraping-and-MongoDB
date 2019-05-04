@@ -6,9 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Mission to Mars Daily Update</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-
 </head>
+
 <body>
 <div class="container-fluid">
     <div class="jumbotron text-center">
@@ -16,14 +15,36 @@
         <p class="lead">Here you can get the latest news</p>
         <hr class="my-4">
         <p>Click the button to get today's article and featured image</p>
-        <a class="btn btn-primary btn-lg" href="/scrape" role="button">Update with Today's Data</a>
+        <a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a>
       </div>
 </div>
 
-
-<h2>Featured Image</h2>
-<a href="{{data.featured_image}}" target="_blank" ><img src="{{data.featured_image}}" alt="Featured Mars image of the Day "></a>
-
+<div class="containter">
+    <div class="row">
+        <div class="col-12">
+            <h2>Latest Mars News</h2>
+            <p>{{mars_data.news_title}}</p>
+            <p>{{mars_data.news_p}}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <h2>Featured Mars Image</h2>
+            <img src="{{mars_data.featured_image_url}}" alt="Featured Mars image of the Day ">
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="card">
+                <div class="card-text">
+                    <p>{{mars_data.mars_weather}}</p>
+                    <div>{{mars_data.html_table}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        
+    </div>
+</div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
