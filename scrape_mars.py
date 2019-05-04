@@ -82,22 +82,44 @@ def scrape_info():
 
     mars_df = tables[0]
     mars_df.columns = ["", "Value"]
-    mars_df
+    mars_df.set_index([""], inplace = True, append = True, drop = True) 
 
     html_table = mars_df.to_html()
     html_table.replace('\n', '')
     html_table
 
-    time = dt.datetime.now()
+    url =  'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(url)
+    html = browser.html
+    soup = bs(html, 'html.parser')
 
+    titles = soup.find_all('h3')
+
+    for title in titles:
+        if title.find('h3'):
+            link_list = browser.find_by_css('a.product-item h3')
+
+            link_list.click()
+
+            results = browser.find_by_text('Sample')
+            image_url = results["href"]
+
+            hemisphere_image_urls = []
+
+            hemisphere_image_urls.append(image_url)
+
+            browser.back()
+        else: 
+            print("done")}
 
     mars_data = {
-                 "Date of entry": time,
-                'Article Title': news_title,
+                'Article_Title': news_title,
                 'Summary': news_p,
-                'Featured Image': featured_image_url,
+                'Featured_Image': featured_image_url,
                 'Weather': mars_weather, 
-                "Mars Facts": html_table, 
+                "Mars_Facts": html_table, 
+                "Title": titles, 
+                "Hemisphere": hemisphere_image_urls
     }
 
     print("Data Uploaded!")

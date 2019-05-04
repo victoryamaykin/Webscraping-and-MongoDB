@@ -13,11 +13,13 @@ def echo():
     mars_data = mongo.db.mars_data.find_one()
     if mars_data is None:
         return redirect("/scrape")
-        
+
     return render_template("index.html", mars_data=mars_data)
 
 @app.route("/scrape")
 def scrape():
+
+    mars_data = mongo.db.mars_data.drop()
 
     mars_data = scrape_mars.scrape_info()
 

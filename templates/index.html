@@ -16,33 +16,53 @@
         <hr class="my-4">
         <p>Click the button to get today's article and featured image</p>
         <a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a>
-      </div>
+        <p>{{mars_data.Date_entry}}</p>
+        </div>
 </div>
 
-<div class="containter">
+<div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <h2>Latest Mars News</h2>
-            <p>{{mars_data.news_title}}</p>
-            <p>{{mars_data.news_p}}</p>
+            <h4>{{mars_data.Article_Title}}</h4>
+            <p>{{mars_data.Summary}}</p>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-12 col-md-6">
+            <div class="card">
             <h2>Featured Mars Image</h2>
-            <img src="{{mars_data.featured_image_url}}" alt="Featured Mars image of the Day ">
+            <img src="{{mars_data.Featured_Image}}" alt="Featured Mars image of the Day ">
+            </div>
         </div>
         <div class="col-sm-12 col-md-6">
             <div class="card">
                 <div class="card-text">
-                    <p>{{mars_data.mars_weather}}</p>
-                    <div>{{mars_data.html_table}}</div>
+                    <h4>Current weather</h4>
+                    <p>{{mars_data.Weather}}</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-text">
+                        <h4>Mars Facts</h4>
+                        {% autoescape off %}
+                        {{mars_data.Mars_Facts}}
+                        {% endautoescape %}
                 </div>
             </div>
         </div>
     </div>
+
+</div>
+
+<div class="container-fluid">
     <div class="row">
-        
+        <div class="col-sm-12 col-md-6">
+                {% autoescape off %}
+                {{mars_data.Title[0]}}
+                {% endautoescape %}
+                <img src="{{mars_data.Hemisphere[0]}}" alt="{{mars_data.Title[0]}}">
+        </div>
     </div>
 </div>
 
