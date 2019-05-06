@@ -1,8 +1,11 @@
 from splinter import Browser
+from splinter.exceptions import ElementDoesNotExist
+from selenium import webdriver
+
 from bs4 import BeautifulSoup as bs
 import datetime as dt 
 import time
-import pymongo
+
 import pandas as pd
 
 def init_browser():
@@ -11,9 +14,7 @@ def init_browser():
 
 def scrape_info():
     browser = init_browser()
-
-
-
+# Scrape the NASA Mars News Site and collect the latest News Title and Paragraph Text.
     url = 'https://mars.nasa.gov/news/'
     browser.visit(url)
 
@@ -25,7 +26,7 @@ def scrape_info():
     news_p = soup.find("div", class_="article_teaser_body").text
     print(news_p)
 
-
+# Use splinter to navigate the site and collect the featured image url
     url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(url)
 
@@ -42,43 +43,35 @@ def scrape_info():
     html = browser.html
     soup = bs(html, 'html.parser')
 
-
     relative_image_path = soup.select_one('figure.lede a img').get("src")
     print(relative_image_path)
-
 
 
     url = 'https://www.jpl.nasa.gov'
     featured_image_url = url + relative_image_path
     featured_image_url
 
-
-
+# Visit the Mars Weather twitter account and scrape the latest tweet
 
     url = 'https://twitter.com/marswxreport?lang=en'
     browser.visit(url)
 
-
-
-
     html = browser.html
     soup = bs(html, 'html.parser')
-
-
 
     mars_weather = soup.find('p', class_="TweetTextSize TweetTextSize--normal js-tweet-text tweet-text").text
     mars_weather
 
-
+# Visit the Mars Facts site and collect the table 
 
     url =  'https://space-facts.com/mars/'
     browser.visit(url)
     html = browser.html
     soup = bs(html, 'html.parser')
 
+# Convest the table to html using pandas 
 
     tables = pd.read_html(url)
-
 
     mars_df = tables[0]
     mars_df.columns = ["", "Value"]
@@ -88,29 +81,44 @@ def scrape_info():
     html_table.replace('\n', '')
     html_table
 
+# Visit the USDS Astrogeology site and collect the high res images for each hemisphere
+
     url =  'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     browser.visit(url)
     html = browser.html
     soup = bs(html, 'html.parser')
 
-    titles = soup.find_all('h3')
+    titles = []
+    hemisphere_image_urls = []
 
-    for title in titles:
-        if title.find('h3'):
-            link_list = browser.find_by_css('a.product-item h3')
+    results = soup.find_all('h3')
 
-            link_list.click()
+    for result in results:
+            try:
+                title = result.text
+                
+                titles.append(title)
+                
+                result = browser.find_by_css('a.product-item h3')
 
-            results = browser.find_by_text('Sample')
-            image_url = results["href"]
+                result.click()
 
-            hemisphere_image_urls = []
+                find = browser.find_by_text('Sample')
 
-            hemisphere_image_urls.append(image_url)
+                image_url = find["href"]
 
-            browser.back()
-        else: 
-            print("done")}
+                hemisphere_image_urls.append(image_url)
+
+                browser.back()
+                
+                if (title and image_url):
+                    print("----")
+                    print(title)
+                    print(image_url)
+            except AttributeError as e: 
+                print(e)
+
+# Append this data to a dictionary to be stored in MongoDB NoSQL
 
     mars_data = {
                 'Article_Title': news_title,
@@ -118,8 +126,14 @@ def scrape_info():
                 'Featured_Image': featured_image_url,
                 'Weather': mars_weather, 
                 "Mars_Facts": html_table, 
-                "Title": titles, 
-                "Hemisphere": hemisphere_image_urls
+                "Title1": titles[0],
+                "Hemisphere1": hemisphere_image_urls[0],
+                "Title2": titles[1],
+                "Hemisphere2": hemisphere_image_urls[1],
+                "Title3": titles[2],
+                "Hemisphere1": hemisphere_image_urls[2],
+                "Title4": titles[3],
+                "Hemisphere1": hemisphere_image_urls[3]
     }
 
     print("Data Uploaded!")
