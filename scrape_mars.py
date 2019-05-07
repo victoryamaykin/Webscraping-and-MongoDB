@@ -75,7 +75,7 @@ def scrape_info():
 
     mars_df = tables[0]
     mars_df.columns = ["", "Value"]
-    mars_df.set_index([""], inplace = True, append = True, drop = True) 
+    mars_df.reset_index(drop = True) 
 
     html_table = mars_df.to_html()
     html_table.replace('\n', '')
@@ -88,52 +88,49 @@ def scrape_info():
     html = browser.html
     soup = bs(html, 'html.parser')
 
-    titles = []
-    hemisphere_image_urls = []
-
     results = soup.find_all('h3')
+    links = ['https://astrogeology.usgs.gov/search/map/Mars/Viking/cerberus_enhanced','https://astrogeology.usgs.gov/search/map/Mars/Viking/schiaparelli_enhanced','https://astrogeology.usgs.gov/search/map/Mars/Viking/syrtis_major_enhanced', 'https://astrogeology.usgs.gov/search/map/Mars/Viking/valles_marineris_enhanced']
+    
+    titles = []
+    
+    hemisphere_image_urls = []
 
     for result in results:
             try:
                 title = result.text
                 
                 titles.append(title)
+            except AttributeError as e: 
+                print(e)
                 
-                result = browser.find_by_css('a.product-item h3')
-
-                result.click()
-
+    for link in links:  
+            try:
+                browser.visit(link)
+                html = browser.html
+                soup = bs(html, 'html.parser')
                 find = browser.find_by_text('Sample')
-
                 image_url = find["href"]
-
                 hemisphere_image_urls.append(image_url)
-
-                browser.back()
                 
-                if (title and image_url):
-                    print("----")
-                    print(title)
-                    print(image_url)
             except AttributeError as e: 
                 print(e)
 
 # Append this data to a dictionary to be stored in MongoDB NoSQL
 
     mars_data = {
-                'Article_Title': news_title,
-                'Summary': news_p,
-                'Featured_Image': featured_image_url,
-                'Weather': mars_weather, 
-                "Mars_Facts": html_table, 
-                "Title1": titles[0],
-                "Hemisphere1": hemisphere_image_urls[0],
-                "Title2": titles[1],
-                "Hemisphere2": hemisphere_image_urls[1],
-                "Title3": titles[2],
-                "Hemisphere1": hemisphere_image_urls[2],
-                "Title4": titles[3],
-                "Hemisphere1": hemisphere_image_urls[3]
+        'Article_Title': news_title,
+        'Summary': news_p,
+        'Featured_Image': featured_image_url,
+        'Weather': mars_weather, 
+        "Mars_Facts": html_table, 
+        "Title1": titles[0],
+        "Hemisphere1": hemisphere_image_urls[0],
+        "Title2": titles[1],
+        "Hemisphere2": hemisphere_image_urls[1],
+        "Title3": titles[2],
+        "Hemisphere3": hemisphere_image_urls[2],
+        "Title4": titles[3],
+        "Hemisphere4": hemisphere_image_urls[3]
     }
 
     print("Data Uploaded!")
