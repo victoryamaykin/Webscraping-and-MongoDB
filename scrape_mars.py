@@ -3,8 +3,6 @@ from splinter.exceptions import ElementDoesNotExist
 from selenium import webdriver
 
 from bs4 import BeautifulSoup as bs
-import datetime as dt 
-import time
 
 import pandas as pd
 
