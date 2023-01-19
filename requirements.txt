@@ -1,2 +1,4 @@
 selenium==3.5.0
 splinter==0.7.6
+pymongo==4.3.3
+streamlit==1.17.0
